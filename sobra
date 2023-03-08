@@ -1,0 +1,40 @@
+
+
+
+def now():
+    newYorkTz = pytz.timezone('Brazil/East')
+    timeInNewYork = datetime.now(newYorkTz)
+    currentTimeInNewYork = timeInNewYork.strftime("%H:%M:%S")
+
+    return print("The current time in New York is:", currentTimeInNewYork)
+
+
+currentTimeInNewYork
+
+
+def foo(bar):
+    print(bar)
+
+
+def main():
+    scheduler = BackgroundScheduler()
+    scheduler.start()
+
+    trigger = CronTrigger(
+        year="*", month="*", day="*", hour="*", minute="*", second="5"
+    )
+    scheduler.add_job(
+        now,
+        trigger=trigger
+    ),
+    scheduler.add_job(
+        foo,
+        trigger=trigger,
+        args=["hello world"],
+        name="daily foo",
+    )
+    # while True:
+    # sleep(5)
+
+
+main()
