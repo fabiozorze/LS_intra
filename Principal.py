@@ -10,7 +10,6 @@ import pytz
 import Order_modules as order
 import Strategy
 
-
 from time import sleep
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -39,7 +38,7 @@ def now():
     return print("The current time in New York is:", currentTimeInSaoPaulo)
 
 
-def Run_strategy():
+def Run_strategy(assets_close=None):
     selected = pd.read_csv(r'C:\Users\Fabio\PycharmProjects\pythonProject\Pair_intra_IBOV\2022.csv', index_col=[0])
 
     dfs = []
@@ -48,13 +47,16 @@ def Run_strategy():
         pair = pd.DataFrame()
         Y = selected['y'][bar]
         X = selected['x'][bar]
-        half = 20
+        half = 240
         hedge_ratio = selected['hedge_ratio'][bar]
         short = selected['short'][bar]
         long = selected['long'][bar]
 
-        y = pd.DataFrame(mt5.copy_rates_from_pos(Y, mt5.TIMEFRAME_H1, 0, 100))[['time', 'close']].set_index('time')
-        x = pd.DataFrame(mt5.copy_rates_from_pos(X, mt5.TIMEFRAME_H1, 0, 100))[['time', 'close']].set_index('time')
+        #y = pd.DataFrame(mt5.copy_rates_from_pos(Y, mt5.TIMEFRAME_H1, 0, 100))[['time', 'close']].set_index('time')
+        #x = pd.DataFrame(mt5.copy_rates_from_pos(X, mt5.TIMEFRAME_H1, 0, 100))[['time', 'close']].set_index('time')
+
+        y = assets_close[Y]
+        x = assets_close[X]
 
         pair[Y] = y
         pair[X] = x
