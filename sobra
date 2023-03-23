@@ -38,3 +38,19 @@ def main():
 
 
 main()
+
+
+def test_for_nan(y,x):
+
+
+    while y.iloc[-1] == np.nan:
+        y = pd.DataFrame(mt5.copy_rates_from_pos(Y, mt5.TIMEFRAME_H1, 0, 100))[['time', 'close']].set_index('time')
+            if y.iloc[-1] != np.nan:
+                last_nan = False
+
+    elif x.iloc[-1] == np.nan:
+        last_nan = True
+        while last_nan:
+            x = pd.DataFrame(mt5.copy_rates_from_pos(X, mt5.TIMEFRAME_H1, 0, 100))[['time', 'close']].set_index('time')
+            if x.iloc[-1] != np.nan:
+                last_nan = False
