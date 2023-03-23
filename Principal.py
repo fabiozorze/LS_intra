@@ -5,7 +5,7 @@ from datetime import datetime
 import pytz
 
 #import Pair_intra_IBOV.Order_modules as order
-#import Pair_intra_IBOV.Strategy
+#from Pair_intra_IBOV.Strategy import Z_score
 
 import Order_modules as order
 import Strategy
@@ -39,6 +39,7 @@ def now():
 
 
 def Run_strategy(assets_close=None):
+    assets_close = assets_close
     selected = pd.read_csv(r'C:\Users\Fabio\PycharmProjects\pythonProject\Pair_intra_IBOV\2022.csv', index_col=[0])
 
     dfs = []
@@ -52,9 +53,6 @@ def Run_strategy(assets_close=None):
         short = selected['short'][bar]
         long = selected['long'][bar]
 
-        #y = pd.DataFrame(mt5.copy_rates_from_pos(Y, mt5.TIMEFRAME_H1, 0, 100))[['time', 'close']].set_index('time')
-        #x = pd.DataFrame(mt5.copy_rates_from_pos(X, mt5.TIMEFRAME_H1, 0, 100))[['time', 'close']].set_index('time')
-
         y = assets_close[Y]
         x = assets_close[X]
 
@@ -64,9 +62,10 @@ def Run_strategy(assets_close=None):
         pair.index = pd.to_datetime(pair.index, unit='s')
 
         # RUN STRATEGY
-        #st = Pair_intra_IBOV.Strategy.Z_score(pair, half, long, short)
         st = Strategy.Z_score(pair, half, long, short)
-        print(st[-2:])
+        #st = Z_score(pair, half, long, short)
+
+        print(st[-3:])
         st['hegde'] = hedge_ratio
 
         dfs.append(st)
@@ -102,6 +101,7 @@ def Run_strategy(assets_close=None):
                     mt5.order_send(req1)
                     mt5.order_send(req2)
 
+        # CLOSE POSITION BLOCK
         else:
 
             if st['positions'].iloc[-1] == 0:
@@ -193,14 +193,4 @@ def Run_strategy(assets_close=None):
                         mt5.order_send(req2)
     now()
 
-
-
-
-
-#if __name__ == '__main__':
-    #login()
-    #Run_strategy()
-    #now()
-
-
-#st = dfs[-1]
+    return dfs

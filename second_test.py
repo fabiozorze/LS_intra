@@ -3,8 +3,12 @@ import time
 import pandas as pd
 import MetaTrader5 as mt5
 from time import sleep
+import Principal as pri
 
-from pandas import DataFrame
+import numpy as np
+import os
+
+
 
 global connection
 connection = False
@@ -56,7 +60,6 @@ if __name__ == '__main__':
 
                 if asset == 'VALE3':
                     data = pd.concat([data, data_one], axis=0, ignore_index=False)
-                    #data.index = pd.to_datetime(data.index, unit='s')
                     data_one = pd.DataFrame()
 
             time.sleep(1)
@@ -65,10 +68,25 @@ if __name__ == '__main__':
             data.index = pd.to_datetime(data.index, unit='s')
             data = data.resample('5t').last().dropna()
 
-            assets_close = pd.concat([assets_close, data], axis=0, ignore_index=False)
+            assets_close = pd.concat([assets_close, data], axis=0, ignore_index=False).fillna(method="ffill")
+            st_list = pri.Run_strategy(assets_close=assets_close)
+
+            # SAVE ST DATAFRAMES TO EACH TXT FILE
+            for l in st_list:
+                df = l
+
+                dir_name = r"C:\Users\Fabio\PycharmProjects\pythonProject\Pair_intra_IBOV"
+                base_filename = df.columns[0] + ".txt"
+
+                path = os.path.join(dir_name, base_filename)
+
+                with open(path, 'a') as f:
+                    f.truncate(0)
+                    df_string = df.to_string(header=True, index=True)
+                    f.write(df_string)
 
 
-            print(assets_close.iloc[-50:])
+            #print(assets_close.iloc[-50:])
             minute_old = dt.minute
             sim = False
             data = pd.DataFrame()
@@ -77,8 +95,11 @@ if __name__ == '__main__':
         if dt.minute != minute_old:
             sim = True
 
-        #if contando == 3:
-            #break
 
         if dt.hour == 20:
             break
+
+
+assets_close['PETR4'] = np.nan
+
+print (assets_close)
