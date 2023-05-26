@@ -48,7 +48,7 @@ def Run_strategy(assets_close=None):
         pair = pd.DataFrame()
         Y = selected['y'][bar]
         X = selected['x'][bar]
-        half = 240
+        half = selected['halflife'][bar]*12
         hedge_ratio = selected['hedge_ratio'][bar]
         short = selected['short'][bar]
         long = selected['long'][bar]
@@ -62,7 +62,7 @@ def Run_strategy(assets_close=None):
         pair.index = pd.to_datetime(pair.index, unit='s')
 
         # RUN STRATEGY
-        st = Strategy.Z_score(pair, half, long, short)
+        st = Strategy.aZ_score(pair, half, long, short)
         #st = Z_score(pair, half, long, short)
 
         print(st[-3:])
