@@ -1,8 +1,9 @@
+import pandas as pd
 import yfinance
 import numpy as np
 
 
-def Z_score(df, lookback, long, short):
+def aZ_score(df, lookback, long, short):
 
     meanSpread = df.spread.rolling(window=lookback).mean()
     stdSpread = df.spread.rolling(window=lookback).std()
@@ -35,3 +36,12 @@ def Z_score(df, lookback, long, short):
 
     return df
 
+#assets_close
+
+#b = assets_close[['PETR3','PETR4']]
+#b = b.loc['2022-01-01':]
+#b['spread'] = b.PETR3 - 1.13368 * b.PETR4
+
+#b = aZ_score(b, 23, -1.680746546515109, 1.618126154507451)
+
+#b = pd.read_csv(r'C:\Users\Fabio\PycharmProjects\pythonProject\Pair_intra_IBOV\csv_file\PETR3.csv', index_col='time')

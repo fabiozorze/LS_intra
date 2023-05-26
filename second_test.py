@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     assets_close = pd.DataFrame()
     for ASSET in assets_list:
-        assets_close[ASSET] = pd.DataFrame(mt5.copy_rates_from_pos(ASSET, mt5.TIMEFRAME_M5, 0, 250))[
+        assets_close[ASSET] = pd.DataFrame(mt5.copy_rates_from_pos(ASSET, mt5.TIMEFRAME_M5, 0, 10000))[
             ['time', 'close']].set_index('time')[:-1]
 
     assets_close.index = pd.to_datetime(assets_close.index, unit='s')
@@ -71,11 +71,12 @@ if __name__ == '__main__':
             assets_close = pd.concat([assets_close, data], axis=0, ignore_index=False).fillna(method="ffill")
             st_list = pri.Run_strategy(assets_close=assets_close)
 
+
             # SAVE ST DATAFRAMES TO EACH TXT FILE
             for l in st_list:
                 df = l
 
-                dir_name = r"C:\Users\Fabio\PycharmProjects\pythonProject\Pair_intra_IBOV"
+                dir_name = r"C:\Users\Fabio\PycharmProjects\pythonProject\Pair_intra_IBOV\logge_file"
                 base_filename = df.columns[0] + ".txt"
 
                 path = os.path.join(dir_name, base_filename)
@@ -84,6 +85,9 @@ if __name__ == '__main__':
                     f.truncate(0)
                     df_string = df.to_string(header=True, index=True)
                     f.write(df_string)
+
+                df.to_csv(r'C:\Users\Fabio\PycharmProjects\pythonProject\Pair_intra_IBOV\csv_file\%s'%df.columns[0]+'.csv')
+
 
 
             #print(assets_close.iloc[-50:])
@@ -96,10 +100,6 @@ if __name__ == '__main__':
             sim = True
 
 
-        if dt.hour == 20:
+        if (dt.hour == 20) & (dt.minute == 55):
             break
 
-
-assets_close['PETR4'] = np.nan
-
-print (assets_close)
